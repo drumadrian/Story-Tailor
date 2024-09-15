@@ -396,3 +396,13 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+.DS_Store
+BrainCloud notes.js
+StoryTailor notes.js
+StoryTailor/ios
+StoryTailor/android
+StoryTailor/.expo/
+StoryTailor/ios/
+
+
+
