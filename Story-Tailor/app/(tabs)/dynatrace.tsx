@@ -1,5 +1,5 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { StyleSheet, Image, Platform, View, Dimensions } from 'react-native';
+import { StyleSheet, Image, Platform, View, Dimensions, TouchableOpacity, Linking } from 'react-native';
 
 import { Collapsible } from '@/components/Collapsible';
 import { ExternalLink } from '@/components/ExternalLink';
@@ -23,34 +23,35 @@ export default function TabFourScreen() {
 
       }>
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">How to use Story Tailor</ThemedText>
+        <ThemedText type="title">Monitoring and Observability</ThemedText>
       </ThemedView>
       
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
+        <ThemedText type="subtitle">Full-Stack Monitoring & Tracing</ThemedText>
         <ThemedText>
-          <ThemedText type="defaultSemiBold"> Tap </ThemedText> on  <ThemedText type="defaultSemiBold">Story Tailor </ThemedText> tab and generate a story.
+        Dynatrace provides comprehensive full-stack monitoring, which allows you to track the performance of your React Native app across all layers, including frontend, backend, and infrastructure. For both health data and finance data, this ensures that all requests, transactions, and user interactions are traced end-to-end. 
+        
+        {'\n'}{'\n'}
+        <ThemedText type="subtitle">Here’s how it relates</ThemedText>
+        {'\n'}{'\n'}
+        •	<ThemedText type="defaultSemiBold">Health Data:</ThemedText> Ensures that health-related data (like medical records or personal health metrics) are processed securely and with low latency. Any anomalies or performance degradations can be tracked, helping ensure compliance with health regulations like HIPAA.
+        {'\n'}{'\n'}
+        •	<ThemedText type="defaultSemiBold">Finance Data:</ThemedText> Monitors transactions and sensitive financial operations to ensure data integrity and real-time response times. Any performance bottlenecks can be identified and addressed before they affect users.
+
         </ThemedText>
+
       </ThemedView>
 
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Personalize </ThemedText>
-        <ThemedText>
-          <ThemedText type="defaultSemiBold"> Tap </ThemedText> on  <ThemedText type="defaultSemiBold">Secure Data </ThemedText> tab and provide context to the Story Tailor.
-          You can share as much or as little as you want.
-        </ThemedText>
+      <ThemedView style={styles.githubLinkContainer}>
+        <TouchableOpacity onPress={() => Linking.openURL('https://github.com/drumadrian/Story-Tailor')}>
+          <Ionicons size={100} name="code-working-outline" style={styles.githubLinkContainer} />
+          <ThemedText>
+            <ThemedText type="subtitle">GitHub Code {'\n'} </ThemedText>
+          </ThemedText>
+        </TouchableOpacity>
       </ThemedView>
 
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a Personalized story</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
+
     </ParallaxScrollView>
   );
 }
@@ -76,6 +77,12 @@ const styles = StyleSheet.create({
     height: 200, // Set a height to cover the top area (adjust as necessary)
     resizeMode: 'stretch', // Make sure the image fills the space proportionally
   },
+  githubLinkContainer: {
+    // flexDirection: 'row',
+    alignItems: 'center',
+    // gap: 8,
+  },
+
 });
 
 

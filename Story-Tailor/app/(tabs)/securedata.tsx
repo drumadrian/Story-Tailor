@@ -1,5 +1,5 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { StyleSheet, Image, Platform, TextInput } from 'react-native';
+import { StyleSheet, Image, Platform, TextInput, Text } from 'react-native';
 
 import { Collapsible } from '@/components/Collapsible';
 import { ExternalLink } from '@/components/ExternalLink';
@@ -28,15 +28,9 @@ export default function TabTwoScreen() {
 
       <Collapsible title="Name">
         <ThemedText>
-          This app has two screens:{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
+          Your name is a unique <ThemedText type="defaultSemiBold">keyword</ThemedText> and identifies you in your story{' '}
         </ThemedText>
-        <ThemedText>
-          The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-          sets up the tab navigator.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
+        <ExternalLink href="https://adriandrummond.com/storytailor">
           <ThemedText type="link">Learn more</ThemedText>
         </ExternalLink>
       </Collapsible>
@@ -44,80 +38,75 @@ export default function TabTwoScreen() {
       <ThemedView style={styles.inputContainer}>
         <TextInput
           style={styles.input}
-          placeholder="Enter your text here"
+          placeholder="Enter your name here"
           placeholderTextColor="#888"
         />
       </ThemedView>
 
 
-      <Collapsible title="Android, iOS, and web support">
+      <Collapsible title="Age">
         <ThemedText>
-          You can open this project on Android, iOS, and the web. To open the web version, press{' '}
-          <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
+          Your age is a unique <ThemedText type="defaultSemiBold">parameter</ThemedText> and personalizes you in your story{' '}
         </ThemedText>
-      </Collapsible>
-
-
-
-      <Collapsible title="Images">
-        <ThemedText>
-          For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to provide files for
-          different screen densities
-        </ThemedText>
-        <Image source={require('@/assets/images/react-logo.png')} style={{ alignSelf: 'center' }} />
-        <ExternalLink href="https://reactnative.dev/docs/images">
+        <ExternalLink href="https://adriandrummond.com/storytailor">
           <ThemedText type="link">Learn more</ThemedText>
         </ExternalLink>
       </Collapsible>
 
+      <ThemedView style={styles.inputContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter your age here"
+          placeholderTextColor="#888"
+        />
+      </ThemedView>
 
 
 
-
-      <Collapsible title="Custom fonts">
+      <Collapsible title="How do you feel">
         <ThemedText>
-          Open <ThemedText type="defaultSemiBold">app/_layout.tsx</ThemedText> to see how to load{' '}
-          <ThemedText style={{ fontFamily: 'SpaceMono' }}>
-            custom fonts such as this one.
-          </ThemedText>
+        <ThemedText type="defaultSemiBold"> Your emotion at this moment...{'\n'} </ThemedText>
+        <ThemedText type="defaultSemiBold">Emotion</ThemedText>  are short-lived feelings that come from a known cause, while moods are feelings that are longer lasting than emotions and have no clear starting point of formation. 
+          {'\n'} <ThemedText type="defaultSemiBold">Emotion</ThemedText> data provides a simply logical way to make sense of feelings
         </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/versions/latest/sdk/font">
+        <ExternalLink href="https://www.6seconds.org/2022/03/13/plutchik-wheel-emotions">
           <ThemedText type="link">Learn more</ThemedText>
         </ExternalLink>
       </Collapsible>
 
+      <ThemedView style={styles.inputContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter emotion here"
+          placeholderTextColor="#888"
+        />
+      </ThemedView>
 
 
-      <Collapsible title="Light and dark mode components">
-        <ThemedText>
-          This template has light and dark mode support. The{' '}
-          <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
-          what the user's current color scheme is, and so you can adjust UI colors accordingly.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
+
+
+      <Collapsible title="Personal Journal Entry">
+      <ThemedText style={styles.inputContainerJournal}>
+        Reflect on your day or a recent experience, and describe how your emotions shaped your thoughts or actions. 
+        Feel free to note any triggers, changes in your mood, or anything significant about the way you felt during the moment.
+        This helps Story Tailor tailor its content more personally to your emotional journey.
+      </ThemedText>
+
+        <ExternalLink href="https://www.6seconds.org/2022/03/13/plutchik-wheel-emotions">
           <ThemedText type="link">Learn more</ThemedText>
         </ExternalLink>
       </Collapsible>
 
-
-
-      <Collapsible title="Animations">
-        <ThemedText>
-          This template includes an example of an animated component. The{' '}
-          <ThemedText type="defaultSemiBold">components/HelloWave.tsx</ThemedText> component uses
-          the powerful <ThemedText type="defaultSemiBold">react-native-reanimated</ThemedText> library
-          to create a waving hand animation.
-        </ThemedText>
-        {Platform.select({
-          ios: (
-            <ThemedText>
-              The <ThemedText type="defaultSemiBold">components/ParallaxScrollView.tsx</ThemedText>{' '}
-              component provides a parallax effect for the header image.
-            </ThemedText>
-          ),
-        })}
-      </Collapsible>
+      <ThemedView style={styles.inputContainerJournal}>
+        <TextInput
+          multiline
+          numberOfLines={100}
+          maxLength={1000}
+          style={styles.input}
+          placeholder="Your secure Journal Entry"
+          placeholderTextColor="#888"
+        />
+      </ThemedView>
 
 
 
@@ -150,6 +139,11 @@ const styles = StyleSheet.create({
   inputContainer: {
     // marginVertical: 20, // Adjust the spacing above and below the TextInput
     paddingHorizontal: 10, // Optional: Padding around the input field
+  },
+  inputContainerJournal: {
+    // marginVertical: 20, // Adjust the spacing above and below the TextInput
+    paddingHorizontal: 10, // Optional: Padding around the input field
+    // height: 200, // Height of the TextInput
   },
   input: {
     height: 40, // Height of the TextInput
