@@ -50,8 +50,14 @@ export default function TabThreeScreen() {
         <RadioButton.Item label="Lifetime" value="Lifetime" />
       </RadioButton.Group>
 
-
       </ThemedView>
+
+      <ThemedView style={{ margin: 0 }}>
+      <ThemedText type="defaultSemiBold">Prepended Prompt:</ThemedText>
+      <ThemedText type="default">Generate sentiment analysis of all my information and emotions.  {'\n'}Then Give me a story in the bible similar to what I am going through. </ThemedText>
+      </ThemedView>
+
+
 
       <ThemedView style={{ margin: 20 }}>
       <Button title="Generate a story from the library" onPress={handleGenerateStory} />
