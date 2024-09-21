@@ -12,21 +12,55 @@ import { useState } from 'react';
 import * as React from 'react';
 
 
-
-const handleGenerateStory = () => {
-  // Generate a story from the library
-  // This function will be implemented in the next step
-  console.log('handleGenerateStory() Once upon a time...')
-};
-
-const handleOnValueChange = (value: string) => {
-  console.log('RadioButton value changed')
-};
+// import React, { useState, useEffect } from 'react';
+// import { View, TextInput, Button, FlatList, Text, StyleSheet, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 
 
 export default function TabThreeScreen() {
-  const [value, setValue] = React.useState('1 Day');
+  const [contextDuration, setcontextDuration] = React.useState('1 Day');
   const [generatedStory, setgeneratedStory] = React.useState('');
+
+  // const [messages, setMessages] = useState([]);
+  
+
+
+  
+  const updateContextDuration = (value: string) => {
+    setcontextDuration(value);
+    console.log('RadioButton value changed to:', value)
+  };
+  
+
+
+  const generateStory = async () => {
+    // Generate a story from the library
+    // setgeneratedStory('Once upon a time...')
+    console.log('generateStory button pressed')
+    
+  
+      // AWS Bedrock to host the Brain Cloud LLM
+      try {
+          console.log("contextDuration:", contextDuration);
+          const response = await fetch("https://gujufqni65c7opvj5yjbw76plm0bnxfj.lambda-url.us-west-2.on.aws/", {
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json",
+              },
+              body: contextDuration,
+          });
+  
+          const generateStoryResponse = await response.text();
+          console.log("generateStoryResponse:", generateStoryResponse);
+          setgeneratedStory(generateStoryResponse);
+  
+      } catch (error) {
+          console.error("Error:", error);
+      }
+  
+  
+  };
+  
+
 
   return (
     <ParallaxScrollView
@@ -40,8 +74,8 @@ export default function TabThreeScreen() {
       <ThemedText type="defaultSemiBold">Select the context duration:</ThemedText>
 
       <RadioButton.Group
-        onValueChange={handleOnValueChange}
-        value={value}
+        onValueChange={updateContextDuration}
+        value={contextDuration}
       >
         <RadioButton.Item label="1 Day" value="1 Day" />
         <RadioButton.Item label="1 Week" value="1 Week" />
@@ -60,13 +94,13 @@ export default function TabThreeScreen() {
 
 
       <ThemedView style={{ margin: 20 }}>
-      <Button title="Generate a story from the library" onPress={handleGenerateStory} />
+      <Button title="Generate a story from the library" onPress={generateStory} />
       </ThemedView>
 
       <ThemedView style={{ margin: 20 }}>
       <ThemedText type="defaultSemiBold">Generated Story:</ThemedText>
       <TextInput
-        style={{ height: 100, borderColor: 'gray', borderWidth: 1 }}
+        style={{ height: 1000, borderColor: 'white', borderWidth: 1 }}
         multiline
         editable={false}
         value={generatedStory}
@@ -76,6 +110,16 @@ export default function TabThreeScreen() {
     </ParallaxScrollView>
   );
 };
+
+
+
+
+
+
+
+
+
+
 
 const styles = StyleSheet.create({
   headerImage: {

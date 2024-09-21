@@ -17,6 +17,12 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 
 ` npm install `
 
+` cd StoryTailor-Lambda `
+
+` ./build-lambda.sh `
+
+` cd ../Story-Tailor `
+
 ` npx expo run:ios `
 
 ## Get started with your own Fork  ⑂

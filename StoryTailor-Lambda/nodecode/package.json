@@ -1,0 +1,17 @@
+{
+  "name": "nodecode",
+  "version": "1.1.0",
+  "type": "module",
+  "description": "nodejs code for braincloud Story Tailor lambda function",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Brain Cloud",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-bedrock-runtime": "^3.435.0",
+    "axios": "^1.7.7",
+    "openai": "^4.12.4"
+  }
+}
