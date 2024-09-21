@@ -14,7 +14,8 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.bybraincloud.Story-Tailor"
+      "bundleIdentifier": "com.bybraincloud.Story-Tailor",
+      "buildNumber": "2",
     },
     "android": {
       "adaptiveIcon": {

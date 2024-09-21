@@ -10,11 +10,7 @@
     "preview": {
       "distribution": "internal"
     },
-    "production": {
-      "ios": {
-        "buildNumber": "2"  // Increment this number for every new submission
-      }
-    }
+    "production": {}
   },
   "submit": {
     "production": {}
