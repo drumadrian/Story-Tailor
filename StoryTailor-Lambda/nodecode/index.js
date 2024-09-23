@@ -3,8 +3,8 @@ import axios from 'axios'; // Ensure axios is installed
 export const handler = async (event) => {
   console.log("event:", event);
 
-  // Extract the context duration from the event body
-  const contextDuration = event.body;
+  // Extract the context duration from the event
+  const contextDuration = event;
   const context = "I am going through a period of uncertainty and I am feeling anxious.";
   const bookName = "The Bible";
   console.log("contextDuration:", contextDuration);
