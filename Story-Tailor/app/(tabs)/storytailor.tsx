@@ -17,7 +17,7 @@ import * as React from 'react';
 
 
 export default function TabThreeScreen() {
-  const [contextDuration, setcontextDuration] = React.useState('1 Day');
+  const [contextDuration, setcontextDuration] = React.useState('day');
   const [generatedStory, setgeneratedStory] = React.useState('');
 
   // const [messages, setMessages] = useState([]);
@@ -34,10 +34,13 @@ export default function TabThreeScreen() {
 
   const generateStory = async () => {
     // Generate a story from the library
-    // setgeneratedStory('Once upon a time...')
-    console.log('generateStory button pressed')
+    console.log('generateStory button pressed');
     
-  
+    const contextDurationObject = {"contextDuration": contextDuration}
+    const contextDurationObjectString = JSON.stringify(contextDurationObject);
+    
+    console.log("contextDurationObject:", contextDurationObject);
+
       // AWS Bedrock to host the Brain Cloud LLM
       try {
           console.log("contextDuration:", contextDuration);
@@ -46,7 +49,7 @@ export default function TabThreeScreen() {
               headers: {
                   "Content-Type": "application/json",
               },
-              body: contextDuration,
+              body: contextDurationObjectString,
           });
   
           const generateStoryResponse = await response.text();
@@ -56,7 +59,6 @@ export default function TabThreeScreen() {
       } catch (error) {
           console.error("Error:", error);
       }
-  
   
   };
   
@@ -77,11 +79,11 @@ export default function TabThreeScreen() {
         onValueChange={updateContextDuration}
         value={contextDuration}
       >
-        <RadioButton.Item label="1 Day" value="1 Day" />
-        <RadioButton.Item label="1 Week" value="1 Week" />
-        <RadioButton.Item label="1 Month" value="1 Month" />
-        <RadioButton.Item label="1 Year" value="1 Year" />
-        <RadioButton.Item label="Lifetime" value="Lifetime" />
+        <RadioButton.Item label="1 Day" value='day' />
+        <RadioButton.Item label="1 Week" value='week' />
+        <RadioButton.Item label="1 Month" value='month' />
+        <RadioButton.Item label="1 Year" value='year' />
+        <RadioButton.Item label="Lifetime" value='all' />
       </RadioButton.Group>
 
       </ThemedView>
@@ -92,10 +94,12 @@ export default function TabThreeScreen() {
       </ThemedView>
 
 
-
-      <ThemedView style={{ margin: 20 }}>
-      <Button title="Generate a story from the library" onPress={generateStory} />
+      <ThemedView style={styles.generatestory}> 
+      <Button title="Generate a story from the library" onPress={generateStory}/>
+      {/* add progress bar here */}
       </ThemedView>
+
+      <ThemedText type="defaultSemiBold">Please allow up to 60 seconds for your story to be generated.</ThemedText>
 
       <ThemedView style={{ margin: 20 }}>
       <ThemedText type="defaultSemiBold">Generated Story:</ThemedText>
@@ -115,12 +119,6 @@ export default function TabThreeScreen() {
 
 
 
-
-
-
-
-
-
 const styles = StyleSheet.create({
   headerImage: {
     color: '#808080',
@@ -132,6 +130,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 8,
   },
+  generatestory: {
+    borderColor: '#ccc', // Light gray border color
+    borderWidth: 5, // Border width of the input field
+    borderRadius: 5, // Rounded corners for the input field
+    backgroundColor: '#ccc', // White background for the input field
+    color: '#000', // Text color
+  },
+
 });
 
 

@@ -1,15 +1,45 @@
 import axios from 'axios'; // Ensure axios is installed
 
-export const handler = async (event) => {
-  console.log("event:", event);
+import https from 'https';
+import { defaultProvider } from '@aws-sdk/credential-provider-node'; // For obtaining credentials automatically
+import { SignatureV4 } from '@aws-sdk/signature-v4';
+import { HttpRequest } from '@aws-sdk/protocol-http';
+import { Sha256 } from '@aws-crypto/sha256-browser';
 
-  // Extract the context duration from the event
-  const contextDuration = event;
-  const context = "I am going through a period of uncertainty and I am feeling anxious.";
+
+const debug = true;
+
+
+export const handler = async (event) => {
+  if (debug)
+    {
+      console.log("event:", event);
+    }
+
+  // Extract the context duration from the event object which is passed as string
+  const eventObject = JSON.parse(event.body);
+  const contextDuration = eventObject.contextDuration;
+  // const context = "I am going through a period of uncertainty and I am feeling anxious.";
+  // const context = "I am going through a period of uncertainty and I am feeling anxious.";
+  if (debug)
+    {
+      console.log("contextDuration:", contextDuration);
+    }
+
+  const queryOpenSearchResults = await queryOpenSearch(contextDuration);  // Queries data within the last week
+  
+  const context = await combineHits(queryOpenSearchResults); // Combine the hits into a single string
+
+  // console.log("context:", context);
+
+
   const bookName = "The Bible";
-  console.log("contextDuration:", contextDuration);
-  console.log("context:", context);
-  console.log("bookName:", bookName);
+  if (debug)
+    {
+    console.log("contextDuration:", contextDuration);
+    console.log("context:", context);
+    console.log("bookName:", bookName);
+    }
 
   // Construct the prompt for the API
   const promptPart1 = "Give me a sentiment analysis of all my information and my emotions using the context I have provided. The context is what I'm going through right now. ";
@@ -19,7 +49,10 @@ export const handler = async (event) => {
 
   const storyprompt = promptPart1 + promptPart2 + promptPart3 + promptPart4;
 
-  console.log("storyprompt:", storyprompt);
+  if (debug)
+    {
+    console.log("storyprompt:", storyprompt);
+    }
 
   // Call OpenAI API with the constructed prompt
   let completionText = await invokeModel(storyprompt);
@@ -58,11 +91,163 @@ async function invokeModel(prompt) {
     );
 
     const completion = response.data.choices[0].message.content.trim();
-    console.log("completion:", completion);
+    if (debug)
+      {
+        console.log("completion:", completion);
+      }
     return completion;
 
   } catch (error) {
     console.error("Error invoking OpenAI API:", error.response ? error.response.data : error.message);
     return "Sorry, there was an error generating the response.";
   }
+};
+
+
+
+/**
+ * Function to query data within specific time ranges
+ * @param {string} range - Time range ('day', 'week', 'month', 'year', 'all')
+ */
+async function queryOpenSearch(range) {
+  // Replace with your OpenSearch domain and index
+  const domain = 'search-storytailor2-y3v3y3gbfsfuyznpjhnvwx6vde.aos.us-west-2.on.aws';
+  const indexName = 'securedata';
+  const region = 'us-west-2'; // Your AWS region
+
+  const end = new Date().toISOString(); // Current time in ISO 8601 format
+  let start;
+
+  switch (range) {
+    case 'day':
+      start = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(); // Last 24 hours
+      break;
+    case 'week':
+      start = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(); // Last 7 days
+      break;
+    case 'month':
+      start = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(); // Last 30 days
+      break;
+    case 'year':
+      start = new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString(); // Last year
+      break;
+    case 'all':
+      start = '1970-01-01T00:00:00Z'; // Start from epoch time
+      break;
+    default:
+      throw new Error('Invalid range provided');
+  }
+
+  // Elasticsearch query DSL for range filtering
+  const query = {
+    query: {
+      range: {
+        'Timestamp': {
+          gte: start,
+          lte: end
+        }
+      }
+    }
+  };
+
+  const requestBody = JSON.stringify(query);
+  if (debug)
+    {
+      console.log("requestBody:", requestBody);
+    }
+
+  // Construct the OpenSearch endpoint
+  const endpoint = new URL(`https://${domain}/${indexName}/_search`);
+
+  // Create the signed request
+  const request = new HttpRequest({
+    method: 'POST',
+    hostname: endpoint.hostname,
+    path: endpoint.pathname,
+    headers: {
+      host: endpoint.hostname,
+      'Content-Type': 'application/json'
+    },
+    body: requestBody
+  });
+
+  try {
+    // Sign the request using Signature V4
+    const credentials = await defaultProvider()();
+    const signer = new SignatureV4({
+      credentials,
+      service: 'es',
+      region,
+      sha256: Sha256
+    });
+
+    const signedRequest = await signer.sign(request);
+
+    // Send the request and fetch the response
+    const response = await makeHttpRequest(signedRequest);
+    if (debug)
+      {
+        console.log('Query result:', response.body);
+      }
+    return response.body; // This will contain the hits and other query details
+
+  } catch (error) {
+    console.error('Error querying OpenSearch:', error);
+  }
 }
+
+// Function to execute the signed HTTP request
+const makeHttpRequest = (request) => {
+  return new Promise((resolve, reject) => {
+    const req = https.request({
+      hostname: request.hostname,
+      method: request.method,
+      path: request.path,
+      headers: request.headers
+    }, (res) => {
+      let data = '';
+      res.on('data', chunk => { data += chunk; });
+      res.on('end', () => {
+        resolve({
+          statusCode: res.statusCode,
+          headers: res.headers,
+          body: JSON.parse(data)
+        });
+      });
+    });
+
+    req.on('error', (error) => {
+      reject(error);
+    });
+
+    if (request.body) {
+      req.write(request.body);
+    }
+
+    req.end();
+  });
+};
+
+
+// Function to parse and combine hits into a single string
+async function combineHits(queryResult) {
+    let fullContents = ""; // Initialize an empty string to store combined contents
+  
+    if (queryResult.hits && queryResult.hits.hits) {
+      // Loop over the hits array
+      queryResult.hits.hits.forEach(hit => {
+        // Convert each hit object to a string and append it to the fullContents
+        fullContents += JSON.stringify(hit) + "\n"; // Add a newline for separation
+      });
+    } else {
+      // If no hits, return an appropriate message
+      fullContents = "No hits found.";
+    }
+  
+    return fullContents;
+  }
+
+
+// handler('week');
+// handler({"contextDuration": 'day'});
+
