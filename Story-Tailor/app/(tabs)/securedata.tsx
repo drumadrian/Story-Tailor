@@ -1,5 +1,5 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { StyleSheet, Image, Platform, TextInput, Text, Button, KeyboardAvoidingView, ScrollView } from 'react-native'; // Import necessary components
+import { StyleSheet, TextInput, Text, Button, KeyboardAvoidingView, ScrollView, Platform } from 'react-native'; // Updated imports
 import { Collapsible } from '@/components/Collapsible';
 import { ExternalLink } from '@/components/ExternalLink';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -61,12 +61,16 @@ export default function TabTwoScreen() {
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={80} // Adjust this value based on your UI
     >
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <ParallaxScrollView headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        keyboardShouldPersistTaps="handled" // Ensure taps on other areas dismiss the keyboard
+      >
+        <ParallaxScrollView
+          headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
           headerImage={<Ionicons size={310} name="accessibility-outline" style={styles.headerImage} />}
         >
-
           <ThemedView style={styles.titleContainer}>
             <ThemedText type="title">Your Secure Data</ThemedText>
           </ThemedView>
@@ -172,8 +176,6 @@ export default function TabTwoScreen() {
     </KeyboardAvoidingView>
   );
 }
-
-
 
 const styles = StyleSheet.create({
   headerImage: {
