@@ -1,45 +1,46 @@
 import axios from 'axios'; // Ensure axios is installed
-
 import https from 'https';
 import { defaultProvider } from '@aws-sdk/credential-provider-node'; // For obtaining credentials automatically
 import { SignatureV4 } from '@aws-sdk/signature-v4';
 import { HttpRequest } from '@aws-sdk/protocol-http';
 import { Sha256 } from '@aws-crypto/sha256-browser';
 
-
 const debug = true;
 
-
 export const handler = async (event) => {
-  if (debug)
-    {
-      console.log("event:", event);
-    }
-
-  // Extract the context duration from the event object which is passed as string
-  const eventObject = JSON.parse(event.body);
-  const contextDuration = eventObject.contextDuration;
-  // const context = "I am going through a period of uncertainty and I am feeling anxious.";
-  // const context = "I am going through a period of uncertainty and I am feeling anxious.";
-  if (debug)
-    {
-      console.log("contextDuration:", contextDuration);
-    }
-
-  const queryOpenSearchResults = await queryOpenSearch(contextDuration);  // Queries data within the last week
+  if (debug) {
+    console.log("event:", event);
+  }
   
-  const context = await combineHits(queryOpenSearchResults); // Combine the hits into a single string
+// Declare eventObject outside of the if-else block
+let eventObject;
 
-  // console.log("context:", context);
+// Extract the context duration and username from the event object
+if (typeof event === 'string') {
+  eventObject = JSON.parse(event.body);
+} else {
+  eventObject = event.body;
+}
 
+const contextDuration = eventObject.contextDuration;
+const username = eventObject.name;
+
+  if (debug) {
+    console.log("contextDuration:", contextDuration);
+    console.log("name:", username);
+  }
+
+  // Call the function to query OpenSearch, passing the context duration and username
+  const queryOpenSearchResults = await queryOpenSearch(contextDuration, username);  
+
+  // Combine the hits into a single string
+  const context = await combineHits(queryOpenSearchResults); 
+
+  if (debug) {
+    console.log("Combined context:", context);
+  }
 
   const bookName = "The Bible";
-  if (debug)
-    {
-    console.log("contextDuration:", contextDuration);
-    console.log("context:", context);
-    console.log("bookName:", bookName);
-    }
 
   // Construct the prompt for the API
   const promptPart1 = "Give me a sentiment analysis of all my information and my emotions using the context I have provided. The context is what I'm going through right now. ";
@@ -49,10 +50,9 @@ export const handler = async (event) => {
 
   const storyprompt = promptPart1 + promptPart2 + promptPart3 + promptPart4;
 
-  if (debug)
-    {
+  if (debug) {
     console.log("storyprompt:", storyprompt);
-    }
+  }
 
   // Call OpenAI API with the constructed prompt
   let completionText = await invokeModel(storyprompt);
@@ -91,25 +91,23 @@ async function invokeModel(prompt) {
     );
 
     const completion = response.data.choices[0].message.content.trim();
-    if (debug)
-      {
-        console.log("completion:", completion);
-      }
+    if (debug) {
+      console.log("completion:", completion);
+    }
     return completion;
 
   } catch (error) {
     console.error("Error invoking OpenAI API:", error.response ? error.response.data : error.message);
     return "Sorry, there was an error generating the response.";
   }
-};
-
-
+}
 
 /**
- * Function to query data within specific time ranges
+ * Function to query data within specific time ranges and for a specific username
  * @param {string} range - Time range ('day', 'week', 'month', 'year', 'all')
+ * @param {string} username - The username to filter the query by
  */
-async function queryOpenSearch(range) {
+async function queryOpenSearch(range, username) {
   // Replace with your OpenSearch domain and index
   const domain = 'search-storytailor2-y3v3y3gbfsfuyznpjhnvwx6vde.aos.us-west-2.on.aws';
   const indexName = 'securedata';
@@ -138,23 +136,22 @@ async function queryOpenSearch(range) {
       throw new Error('Invalid range provided');
   }
 
-  // Elasticsearch query DSL for range filtering
+  // Update the Elasticsearch query DSL for both range filtering and matching username
   const query = {
     query: {
-      range: {
-        'Timestamp': {
-          gte: start,
-          lte: end
-        }
+      bool: {
+        must: [
+          { range: { 'Timestamp': { gte: start, lte: end } } }, // Range filter
+          { match: { 'Name': username } } // Match username (use 'match' for approximate match)
+        ]
       }
     }
   };
 
   const requestBody = JSON.stringify(query);
-  if (debug)
-    {
-      console.log("requestBody:", requestBody);
-    }
+  if (debug) {
+    console.log("requestBody:", requestBody);
+  }
 
   // Construct the OpenSearch endpoint
   const endpoint = new URL(`https://${domain}/${indexName}/_search`);
@@ -185,10 +182,9 @@ async function queryOpenSearch(range) {
 
     // Send the request and fetch the response
     const response = await makeHttpRequest(signedRequest);
-    if (debug)
-      {
-        console.log('Query result:', response.body);
-      }
+    if (debug) {
+      console.log('Query result:', response.body);
+    }
     return response.body; // This will contain the hits and other query details
 
   } catch (error) {
@@ -228,26 +224,31 @@ const makeHttpRequest = (request) => {
   });
 };
 
-
 // Function to parse and combine hits into a single string
 async function combineHits(queryResult) {
-    let fullContents = ""; // Initialize an empty string to store combined contents
-  
-    if (queryResult.hits && queryResult.hits.hits) {
-      // Loop over the hits array
-      queryResult.hits.hits.forEach(hit => {
-        // Convert each hit object to a string and append it to the fullContents
-        fullContents += JSON.stringify(hit) + "\n"; // Add a newline for separation
-      });
-    } else {
-      // If no hits, return an appropriate message
-      fullContents = "No hits found.";
-    }
-  
-    return fullContents;
+  let fullContents = ""; // Initialize an empty string to store combined contents
+
+  if (queryResult.hits && queryResult.hits.hits) {
+    // Loop over the hits array
+    queryResult.hits.hits.forEach(hit => {
+      // Convert each hit object to a string and append it to the fullContents
+      fullContents += JSON.stringify(hit) + "\n"; // Add a newline for separation
+    });
+  } else {
+    // If no hits, return an appropriate message
+    fullContents = "No hits found.";
   }
 
+  return fullContents;
+}
 
 // handler('week');
 // handler({"contextDuration": 'day'});
 
+// Correctly pass the body as a string to the handler
+// handler({
+//   "body": JSON.stringify({
+//     "contextDuration": "day",
+//     "name": "Adrian"
+//   })
+// });

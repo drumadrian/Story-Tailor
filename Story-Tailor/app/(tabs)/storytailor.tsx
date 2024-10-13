@@ -19,6 +19,7 @@ import * as React from 'react';
 export default function TabThreeScreen() {
   const [contextDuration, setcontextDuration] = React.useState('day');
   const [generatedStory, setgeneratedStory] = React.useState('');
+  const [Name, setName] = React.useState('');
 
   // const [messages, setMessages] = useState([]);
   
@@ -36,7 +37,7 @@ export default function TabThreeScreen() {
     // Generate a story from the library
     console.log('generateStory button pressed');
     
-    const contextDurationObject = {"contextDuration": contextDuration}
+    const contextDurationObject = {"contextDuration": contextDuration, "name": Name}
     const contextDurationObjectString = JSON.stringify(contextDurationObject);
     
     console.log("contextDurationObject:", contextDurationObject);
@@ -71,6 +72,18 @@ export default function TabThreeScreen() {
       <ThemedView style={styles.titleContainer}>
       <ThemedText type="title">Your Personal Library</ThemedText>
       </ThemedView>
+
+
+      <ThemedView style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your name here"
+              placeholderTextColor="#888"
+              value={Name}
+              onChangeText={setName}
+            />
+          </ThemedView>
+
 
       <ThemedView style={{ margin: 20 }}>
       <ThemedText type="defaultSemiBold">Select the context duration:</ThemedText>
@@ -129,6 +142,19 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: 'row',
     gap: 8,
+  },
+  inputContainer: {
+    // marginVertical: 20, // Adjust the spacing above and below the TextInput
+    paddingHorizontal: 10, // Optional: Padding around the input field
+  },
+  input: {
+    height: 40, // Height of the TextInput
+    borderColor: '#ccc', // Light gray border color
+    borderWidth: 1, // Border width of the input field
+    paddingHorizontal: 10, // Padding inside the input field
+    borderRadius: 5, // Rounded corners for the input field
+    backgroundColor: '#fff', // White background for the input field
+    color: '#000', // Text color
   },
   generatestory: {
     borderColor: '#ccc', // Light gray border color
