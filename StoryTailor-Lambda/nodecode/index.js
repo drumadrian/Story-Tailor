@@ -8,22 +8,24 @@ import { Sha256 } from '@aws-crypto/sha256-browser';
 const debug = true;
 
 export const handler = async (event) => {
+
+  const debug = true;
+
   if (debug) {
     console.log("event:", event);
   }
-  
-// Declare eventObject outside of the if-else block
-let eventObject;
 
-// Extract the context duration and username from the event object
-if (typeof event === 'string') {
-  eventObject = JSON.parse(event.body);
-} else {
-  eventObject = event.body;
-}
+  // Check if event.body is a string, and parse it if necessary
+  let eventObject;
+  if (typeof event.body === 'string') {
+    eventObject = JSON.parse(event.body);
+  } else {
+    eventObject = event.body;
+  }
 
-const contextDuration = eventObject.contextDuration;
-const username = eventObject.name;
+  // Now extract the contextDuration and username
+  const contextDuration = eventObject.contextDuration;
+  const username = eventObject.name;
 
   if (debug) {
     console.log("contextDuration:", contextDuration);
@@ -64,6 +66,9 @@ const username = eventObject.name;
   };
   return response;
 };
+
+
+
 
 // Function to call OpenAI API with GPT-4 model
 async function invokeModel(prompt) {
