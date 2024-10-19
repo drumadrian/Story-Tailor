@@ -7,12 +7,17 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { useState } from 'react';
 import * as React from 'react';
+import { TouchableOpacity } from 'react-native'; // Update to TouchableOpacity for feedback
+
+
 
 export default function TabTwoScreen() {
   const [Name, setName] = React.useState('');
   const [Age, setAge] = React.useState('');
   const [Emotion, setEmotion] = React.useState('');
   const [JournalEntry, setJournalEntry] = React.useState('');
+  const [isPressed, setIsPressed] = useState(false);
+
 
   const clearForm = () => {
     setName('');
@@ -162,8 +167,22 @@ export default function TabTwoScreen() {
             />
           </ThemedView>
 
-          <ThemedView style={styles.savesecuredata}>
+          {/* <ThemedView style={styles.savesecuredata}>
             <Button title="Save Secure Data" onPress={saveSecureData} />
+          </ThemedView> */}
+
+          <ThemedView style={styles.savesecuredata}>
+            <TouchableOpacity
+              style={[
+                styles.button,
+                { backgroundColor: isPressed ? '#0056b3' : '#007bff' }, // Change color on press
+              ]}
+              onPressIn={() => setIsPressed(true)}
+              onPressOut={() => setIsPressed(false)}
+              onPress={saveSecureData}
+            >
+              <Text style={styles.buttonText}>Save Secure Data</Text>
+            </TouchableOpacity>
           </ThemedView>
 
           <ThemedView>
@@ -207,12 +226,28 @@ const styles = StyleSheet.create({
     color: '#000', // Text color
   },
   savesecuredata: {
-    borderColor: '#ccc', // Light gray border color
-    borderWidth: 5, // Border width of the input field
-    borderRadius: 5, // Rounded corners for the input field
-    backgroundColor: '#ccc', // White background for the input field
-    color: '#000', // Text color
+    borderColor: '#007bff',
+    borderWidth: 2, 
+    borderRadius: 8,
+    backgroundColor: '#007bff',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
+  button: {
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderWidth: 2,
+    borderColor: '#007bff',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+
 
 });
 
