@@ -1,61 +1,43 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
+import { Amplify } from 'aws-amplify';
+import awsExports from '../../aws-exports';
+import { Authenticator } from '@aws-amplify/ui-react-native';
+import { View, Text, Button } from 'react-native';
+import * as SecureStore from 'expo-secure-store';
+import { useEffect } from 'react';
 
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+// import { Logger } from 'aws-amplify';
+// const logger = new Logger('AmplifyLogger');
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
+Amplify.configure(awsExports);
+console.log('Amplify Configured');
+
+export default function Layout() {
+  const saveUserToSecureStore = async (username: string) => {
+    try {
+      await SecureStore.setItemAsync('user', username);
+    } catch (error) {
+      console.error('Error storing user securely:', error);
+    }
+  };
 
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-      }}>
+    <Authenticator.Provider>
+      <Authenticator>
+        {({ signOut, user }) => {
+          useEffect(() => {
+            if (user) {
+              saveUserToSecureStore(user.username);
+            }
+          }, [user]);
 
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
-          ),
+          return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <Text style={{ fontSize: 20 }}>Hello, {user?.username}</Text>
+              <Button title="Sign Out" onPress={signOut} />
+            </View>
+          );
         }}
-      />
-
-      <Tabs.Screen
-        name="securedata"
-        options={{
-          title: 'Secure Data',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'accessibility' : 'accessibility-outline'} color={color} />
-          ),
-        }}
-      />
-
-      <Tabs.Screen
-              name="storytailor"
-              options={{
-                title: 'Story Tailor',
-                tabBarIcon: ({ color, focused }) => (
-                  <TabBarIcon name={focused ? 'book' : 'book-outline'} color={color} />
-                ),
-              }}
-            />
-
-      <Tabs.Screen
-              name="dynatrace"
-              options={{
-                title: 'Dynatrace',
-                tabBarIcon: ({ color, focused }) => (
-                  <TabBarIcon name={focused ? 'contract-outline' : 'analytics-outline'} color={color} />
-                ),
-              }}
-            />
-
-
-    </Tabs>
+      </Authenticator>
+    </Authenticator.Provider>
   );
 }
