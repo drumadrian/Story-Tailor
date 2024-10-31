@@ -407,3 +407,4 @@ StoryTailor/ios/*
 
 
 Story-Tailor/.gitignore
+Story-Tailor/amplify_outputs.json

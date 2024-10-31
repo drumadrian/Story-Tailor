@@ -1,16 +1,22 @@
-import { Image, StyleSheet, Platform, View, Dimensions, Linking, TouchableOpacity } from 'react-native';
-
+import { Image, StyleSheet, View, Dimensions, Linking, TouchableOpacity, Button } from 'react-native';
+import React, { useState } from 'react';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
-const { width } = Dimensions.get('window'); // Get the screen width
-const { height } = Dimensions.get('window'); // Get the screen width
+import { useAuthenticator } from "@aws-amplify/ui-react-native";
 
+const { width } = Dimensions.get('window');
+const { height } = Dimensions.get('window');
 
 export default function HomeScreen() {
+  const [isPressed, setIsPressed] = useState(false);
+
+  // Define signOut inside the component so it has access to hooks
+  const { signOut } = useAuthenticator();
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#f7fbfc', dark: '#343e47' }}
@@ -21,8 +27,8 @@ export default function HomeScreen() {
             style={styles.storyTailorLogo}
           />
         </View>
-
       }>
+      
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">How to use Story Tailor</ThemedText>
         <HelloWave />
@@ -31,14 +37,14 @@ export default function HomeScreen() {
       <ThemedView style={styles.stepContainer}>
         <ThemedText type="subtitle">Step 1: Try it</ThemedText>
         <ThemedText>
-          <ThemedText type="defaultSemiBold"> Tap </ThemedText> on  <ThemedText type="defaultSemiBold">Story Tailor </ThemedText> tab and generate a story.
+          <ThemedText type="defaultSemiBold"> Tap </ThemedText> on <ThemedText type="defaultSemiBold">Story Tailor </ThemedText> tab and generate a story.
         </ThemedText>
       </ThemedView>
 
       <ThemedView style={styles.stepContainer}>
         <ThemedText type="subtitle">Step 2: Personalize </ThemedText>
         <ThemedText>
-          <ThemedText type="defaultSemiBold"> Tap </ThemedText> on  <ThemedText type="defaultSemiBold">Secure Data </ThemedText> tab and provide context to the Story Tailor.
+          <ThemedText type="defaultSemiBold"> Tap </ThemedText> on <ThemedText type="defaultSemiBold">Secure Data </ThemedText> tab and provide context to the Story Tailor.
           You can share as much or as little as you want.
         </ThemedText>
       </ThemedView>
@@ -59,17 +65,18 @@ export default function HomeScreen() {
       </ThemedView>
 
       <ThemedView style={styles.howitworksvideo}>
-            <Image
-              source={require('@/assets/images/youtubethumbnail.png')}  // Replace with your image path
-              style={styles.howitworksvideo}  // Style for the image
-            />
+        <Image
+          source={require('@/assets/images/youtubethumbnail.png')}
+          style={styles.howitworksvideo}
+        />
+        <TouchableOpacity onPress={() => Linking.openURL('https://youtu.be/99qoy-TRxHg?si=PsUTGie7J_hIDvWc')}>
+          <ThemedText type="defaultSemiBold"> Watch on YouTube</ThemedText>
+        </TouchableOpacity>
+      </ThemedView>
 
-          <TouchableOpacity onPress={() => Linking.openURL('https://youtu.be/99qoy-TRxHg?si=PsUTGie7J_hIDvWc')}>
-            <ThemedText type="defaultSemiBold"> Watch on YouTube</ThemedText>
-          </TouchableOpacity>
-
-    </ThemedView>
-
+      <ThemedView style={styles.howitworksvideo}>
+        <Button title="Sign Out" onPress={signOut} />
+      </ThemedView>
     </ParallaxScrollView>
   );
 }
@@ -85,34 +92,46 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   imageContainer: {
-    marginTop: 0, // Set the top margin of 55 pixels
-    // width: '100%', // Full width of the screen
-    // width: width, // Full width of the screen
-    // alignItems: 'center',  // Center the image horizontally
-    // justifyContent: 'center', // Center the content vertically (if necessary)
-    // height: 100, // Set a height to cover the top area (adjust as necessary)
+    marginTop: 0,
   },
   storyTailorLogo: {
-    width: '100%', // Set the image width to fill the entire screen width
-    // width: width, // Full width of the screen
-    // width: 420, // Full width of the screen
-    height: 310, // Set a height to cover the top area (adjust as necessary)
-    // height: height, // Set a height to cover the top area (adjust as necessary)
-    resizeMode: 'stretch', // Make sure the image fills the space proportionally
-    // resizeMode: 'cover', // Make sure the image fills the space proportionally
+    width: '100%',
+    height: 310,
+    resizeMode: 'stretch',
   },
   howitworksvideo: {
-    width: '100%', // Set the width of the image
+    width: '100%',
     alignItems: 'center',
-    // justifyContent: 'center',
-    height: 210, // Set the height of the image
-    resizeMode: 'stretch', // Ensures the image fits within the space
-    marginRight: 0, // Optional: Add spacing to separate from text
-    marginLeft: 0, // Optional: Add spacing to separate from text
-    // marginTop: 10, // Optional: Add spacing to separate from text
-    // marginTop: 10, // Optional: Add spacing to separate from text
+    height: 210,
+    resizeMode: 'stretch',
+    marginRight: 0,
+    marginLeft: 0,
   },
-
+  signout: {
+    borderColor: '#007bff',
+    borderWidth: 2, 
+    borderRadius: 8,
+    backgroundColor: '#007bff',
+    paddingVertical: 1,
+    paddingHorizontal: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 1,
+    marginBottom: 1,
+  },
+  signOutButton: {
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderWidth: 2,
+    borderColor: '#007bff',
+    backgroundColor: '#007bff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  signOutText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 });
-
-
