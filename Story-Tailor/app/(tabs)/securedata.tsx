@@ -185,10 +185,6 @@ export default function TabTwoScreen() {
             </TouchableOpacity>
           </ThemedView>
 
-          <ThemedView>
-            <Text> {'\n'}</Text>
-            <Button title="Clear Form Data" onPress={clearForm} />
-          </ThemedView>
 
         </ParallaxScrollView>
       </ScrollView>
