@@ -1,4 +1,4 @@
-import 'expo-dotenv';
+import 'expo-env';
 
 export default {
   expo: {
