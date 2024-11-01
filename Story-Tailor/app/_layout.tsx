@@ -15,15 +15,26 @@ import { Authenticator, useAuthenticator } from "@aws-amplify/ui-react-native";
 
 import { Amplify } from "aws-amplify";
 
+import Constants from "expo-constants";
+
 import outputs from '../amplify_outputs.json';
 
-Amplify.configure(outputs);
+// Amplify.configure(outputs);
 
-
+Amplify.configure({
+  auth: {
+    user_pool_id: Constants.expoConfig.extra.user_pool_id,
+    user_pool_client_id: Constants.expoConfig.extra.user_pool_client_id,
+    identity_pool_id: Constants.expoConfig.extra.identity_pool_id,
+    aws_region: Constants.expoConfig.extra.aws_region,
+  },
+});
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
+
+console.log('Constants.expoConfig.extra.fact', Constants.expoConfig.extra.fact);
 
 
 export default function RootLayout() {
