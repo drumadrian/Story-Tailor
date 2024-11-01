@@ -44,7 +44,7 @@ export default {
       "router": {
         "origin": false,  
       },
-      "fact": 'kittens are cool',
+      "fact": process.env.EXPO_PUBLIC_FACT,
       "user_pool_id": process.env.EXPO_PUBLIC_COGNITO_USER_POOL_ID,
       "user_pool_client_id": process.env.EXPO_PUBLIC_COGNITO_CLIENT_ID,
       "identity_pool_id": process.env.EXPO_PUBLIC_COGNITO_IDENTITY_POOL_ID,

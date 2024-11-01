@@ -19,22 +19,39 @@ import Constants from "expo-constants";
 
 import outputs from '../amplify_outputs.json';
 
-// Amplify.configure(outputs);
 
-Amplify.configure({
-  auth: {
+console.log('Constants.expoConfig.extra.fact', Constants.expoConfig.extra.fact);
+console.log('Constants.expoConfig.extra.user_pool_client_id', Constants.expoConfig.extra.user_pool_client_id);
+console.log('Constants.expoConfig.extra.identity_pool_id', Constants.expoConfig.extra.identity_pool_id);
+console.log('Constants.expoConfig.extra.aws_region', Constants.expoConfig.extra.aws_region);
+
+// console.log('Constants.manifest.extra.fact', Constants.manifest.extra.fact);
+
+
+// Amplify.configure(outputs);
+const amplifyConfig = {
+  Auth: {
     user_pool_id: Constants.expoConfig.extra.user_pool_id,
     user_pool_client_id: Constants.expoConfig.extra.user_pool_client_id,
     identity_pool_id: Constants.expoConfig.extra.identity_pool_id,
     aws_region: Constants.expoConfig.extra.aws_region,
-  },
-});
+  }
+};
+
+// const amplifyConfig = {
+//   Auth: {
+//     user_pool_id: Constants.manifest?.extra?.user_pool_id || Constants.expoConfig?.extra?.user_pool_id,
+//     user_pool_client_id: Constants.manifest?.extra?.user_pool_client_id || Constants.expoConfig?.extra?.user_pool_client_id,
+//     identity_pool_id: Constants.manifest?.extra?.identity_pool_id || Constants.expoConfig?.extra?.identity_pool_id,
+//     aws_region: Constants.manifest?.extra?.aws_region || Constants.expoConfig?.extra?.aws_region,
+//   }
+// };
+
+Amplify.configure(amplifyConfig);
+
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
-
-
-console.log('Constants.expoConfig.extra.fact', Constants.expoConfig.extra.fact);
 
 
 export default function RootLayout() {
