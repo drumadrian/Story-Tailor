@@ -1,200 +1,252 @@
-import React from "react";
-import { Button, Text, StyleSheet, SafeAreaView, View } from "react-native";
+// _layout.tsx
 
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
-
+import React, { useEffect } from "react";
+import { StyleSheet } from "react-native";
+import { Tabs } from 'expo-router';
+import { ThemeProvider, DarkTheme, DefaultTheme } from '@react-navigation/native';
 import { useColorScheme } from '@/hooks/useColorScheme';
-
-
-import { Authenticator, useAuthenticator } from "@aws-amplify/ui-react-native";
-
 import { Amplify } from "aws-amplify";
-
 import Constants from "expo-constants";
+import { Authenticator } from "@aws-amplify/ui-react-native";
 
-import outputs from '../amplify_outputs.json';
+import { TabBarIcon } from '@/components/navigation/TabBarIcon';
+import { Colors } from '@/constants/Colors';
 
-
-console.log('Constants.expoConfig.extra.fact', Constants.expoConfig.extra.fact);
-console.log('Constants.expoConfig.extra.user_pool_client_id', Constants.expoConfig.extra.user_pool_client_id);
-console.log('Constants.expoConfig.extra.identity_pool_id', Constants.expoConfig.extra.identity_pool_id);
-console.log('Constants.expoConfig.extra.aws_region', Constants.expoConfig.extra.aws_region);
-
-// console.log('Constants.manifest.extra.fact', Constants.manifest.extra.fact);
+import outputs from "../amplify_outputs.json";
 
 
-// Amplify.configure(outputs);
-const amplifyConfig = {
-  Auth: {
-    user_pool_id: Constants.expoConfig.extra.user_pool_id,
-    user_pool_client_id: Constants.expoConfig.extra.user_pool_client_id,
-    identity_pool_id: Constants.expoConfig.extra.identity_pool_id,
-    aws_region: Constants.expoConfig.extra.aws_region,
-  }
-};
-
+// Amplify configuration (using hardcoded values for example purposes)
 // const amplifyConfig = {
-//   Auth: {
-//     user_pool_id: Constants.manifest?.extra?.user_pool_id || Constants.expoConfig?.extra?.user_pool_id,
-//     user_pool_client_id: Constants.manifest?.extra?.user_pool_client_id || Constants.expoConfig?.extra?.user_pool_client_id,
-//     identity_pool_id: Constants.manifest?.extra?.identity_pool_id || Constants.expoConfig?.extra?.identity_pool_id,
-//     aws_region: Constants.manifest?.extra?.aws_region || Constants.expoConfig?.extra?.aws_region,
+//   auth: {
+//     region: "us-west-2",
+//     user_Pool_Id: "us-west-2_Yu92Q50zz",
+//     user_Pool_Web_ClientId: "6ej8hgmg61tlisicub76sc70pq",
+//     identity_Pool_Id: "us-west-2:3ab13cc6-2ef6-44c2-9558-b84cfc6e91da",
+//     // mandatorySignIn: false,  // Optional: Set to true if you want to require sign-in for all interactions
+//     // authenticationFlowType: "USER_SRP_AUTH", // Optional: Set the type of authentication flow
+//     passwordPolicy: {
+//       minLength: 8,
+//       requireLowercase: true,
+//       requireNumbers: true,
+//       requireSymbols: true,
+//       requireUppercase: true,
+//     },
+//     mfaConfiguration: "NONE",  // MFA settings
+//     userVerificationAttributes: ["email"],  // Required user attributes
+//     usernameAttributes: ["email"],  // Username attribute
+//     unauthenticatedIdentities: true  // Allow unauthenticated identities
+//   },
+//   API: {
+//     aws_appsync_graphqlEndpoint: "https://ojy2kkwvyvc6dc2jhrhfwkk4ui.appsync-api.us-west-2.amazonaws.com/graphql",
+//     aws_appsync_region: "us-west-2",
+//     aws_appsync_authenticationType: "AMAZON_COGNITO_USER_POOLS", // Use Cognito as the authorization method
 //   }
 // };
 
+
+
+const fact = Constants.expoConfig.extra.fact;
+const user_pool_id = Constants.expoConfig.extra.user_pool_id;
+const user_pool_client_id = Constants.expoConfig.extra.user_pool_client_id;
+const identity_pool_id = Constants.expoConfig.extra.identity_pool_id;
+const aws_region = Constants.expoConfig.extra.aws_region;
+const url = Constants.expoConfig.extra.url;
+
+
+// Amplify configuration (using Constants values)
+console.log("Constants.manifest.extra.fact:", fact);
+console.log("Constants.manifest.extra.user_pool_id:", user_pool_id);
+console.log("Constants.manifest.extra.user_pool_client_id:", user_pool_client_id);
+console.log("Constants.manifest.extra.identity_pool_id:", identity_pool_id);
+console.log("Constants.manifest.extra.aws_region:", aws_region);
+console.log("Constants.manifest.extra.url:", url);
+
+
+let initial_amplifyConfig = 
+  {
+    "auth": {
+        "aws_region": aws_region,
+        "groups": [],
+        "identity_pool_id": identity_pool_id,
+        "mfa_configuration": "NONE",
+        "mfa_methods": [],
+        "password_policy": {
+            "min_length": 8,
+            "require_lowercase": true,
+            "require_numbers": true,
+            "require_symbols": true,
+            "require_uppercase": true
+        },
+        "standard_required_attributes": [
+            "email"
+        ],
+        "unauthenticated_identities_enabled": true,
+        "user_pool_client_id": user_pool_client_id,
+        "user_pool_id": user_pool_id,
+        "user_verification_types": [
+            "email"
+        ],
+        "username_attributes": [
+            "email"
+        ]
+    },
+    "data": {
+        "authorization_types": [
+            "AMAZON_COGNITO_USER_POOLS"
+        ],
+        "aws_region": aws_region,
+        "default_authorization_type": "AWS_IAM",
+        "model_introspection": {
+          "version": 1,
+          "models": {
+            "Todo": {
+              "name": "Todo",
+              "fields": {
+                "id": {
+                  "name": "id",
+                  "isArray": false,
+                  "type": "ID",
+                  "isRequired": true,
+                  "attributes": []
+                },
+                "content": {
+                  "name": "content",
+                  "isArray": false,
+                  "type": "String",
+                  "isRequired": false,
+                  "attributes": []
+                },
+                "createdAt": {
+                  "name": "createdAt",
+                  "isArray": false,
+                  "type": "AWSDateTime",
+                  "isRequired": false,
+                  "attributes": [],
+                  "isReadOnly": true
+                },
+                "updatedAt": {
+                  "name": "updatedAt",
+                  "isArray": false,
+                  "type": "AWSDateTime",
+                  "isRequired": false,
+                  "attributes": [],
+                  "isReadOnly": true
+                }
+              },
+              "syncable": true,
+              "pluralName": "Todos",
+              "attributes": [
+                {
+                  "type": "model",
+                  "properties": {}
+                },
+                {
+                  "type": "auth",
+                  "properties": {
+                    "rules": [
+                      {
+                        "allow": "public",
+                        "provider": "iam",
+                        "operations": [
+                          "create",
+                          "update",
+                          "delete",
+                          "read"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "primaryKeyInfo": {
+                "isCustomPrimaryKey": false,
+                "primaryKeyFieldName": "id",
+                "sortKeyFieldNames": []
+              }
+            }
+          },
+          "enums": {},
+          "nonModels": {}
+        },
+            "url": url
+    },
+    "version": "1.3"
+  };
+
+
+const amplifyConfig = initial_amplifyConfig;
+
+// Log the Amplify configuration to ensure it’s correctly set
+console.log("Amplify Config:", amplifyConfig);
+console.log("Amplify Outputs:", outputs);
+
+
+
+// Configure Amplify
 Amplify.configure(amplifyConfig);
-
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
-
+// Amplify.configure(outputs);
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
 
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
-
-
-  const SignOutButtonDELETE = () => {
-    const colorScheme = useColorScheme();
-    return (  
-      <View>
-        {/* <Text>Welcome to the app!</Text> */}
-        <Stack>
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen name="+not-found" />
-          </Stack>
-
-        {/* <Button title="Sign Out" onPress={signOut} /> */}
-      </View>
-  
-    );
-  };
-
-  
-  const MainStack = () => {
-    // const { signOut } = useAuthenticator();
-    const colorScheme = useColorScheme();
-    return (  
-
-      <>
-      
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-      </ThemeProvider>
-  
-      </>
-  
-    );
-  };
-
-
-  
   return (
-
     <Authenticator.Provider>
       <Authenticator>
-
-
-          <MainStack />
-
-
+        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+          <Tabs
+            screenOptions={{
+              tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+              headerShown: false,
+            }}
+          >
+            <Tabs.Screen
+              name="index"
+              options={{
+                title: 'Home',
+                tabBarIcon: ({ color, focused }) => (
+                  <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
+                ),
+              }}
+            />
+            <Tabs.Screen
+              name="securedata"
+              options={{
+                title: 'Secure Data',
+                tabBarIcon: ({ color, focused }) => (
+                  <TabBarIcon name={focused ? 'accessibility' : 'accessibility-outline'} color={color} />
+                ),
+              }}
+            />
+            <Tabs.Screen
+              name="storytailor"
+              options={{
+                title: 'Story Tailor',
+                tabBarIcon: ({ color, focused }) => (
+                  <TabBarIcon name={focused ? 'book' : 'book-outline'} color={color} />
+                ),
+              }}
+            />
+            <Tabs.Screen
+              name="dynatrace"
+              options={{
+                title: 'Dynatrace',
+                tabBarIcon: ({ color, focused }) => (
+                  <TabBarIcon name={focused ? 'analytics' : 'analytics-outline'} color={color} />
+                ),
+              }}
+            />
+            <Tabs.Screen
+              name="signout"
+              options={{
+                title: 'Sign Out',
+                tabBarIcon: ({ color, focused }) => (
+                  <TabBarIcon name={focused ? 'exit' : 'exit-outline'} color={color} />
+                ),
+              }}
+            />
+          </Tabs>
+        </ThemeProvider>
       </Authenticator>
     </Authenticator.Provider>
-
-
   );
 }
-
-
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  imageContainer: {
-    marginTop: 0, // Set the top margin of 55 pixels
-    // width: '100%', // Full width of the screen
-    // width: width, // Full width of the screen
-    // alignItems: 'center',  // Center the image horizontally
-    // justifyContent: 'center', // Center the content vertically (if necessary)
-    // height: 100, // Set a height to cover the top area (adjust as necessary)
-  },
-  storyTailorLogo: {
-    width: '100%', // Set the image width to fill the entire screen width
-    // width: width, // Full width of the screen
-    // width: 420, // Full width of the screen
-    height: 310, // Set a height to cover the top area (adjust as necessary)
-    // height: height, // Set a height to cover the top area (adjust as necessary)
-    resizeMode: 'stretch', // Make sure the image fills the space proportionally
-    // resizeMode: 'cover', // Make sure the image fills the space proportionally
-  },
-  howitworksvideo: {
-    width: '100%', // Set the width of the image
-    alignItems: 'center',
-    // justifyContent: 'center',
-    height: 210, // Set the height of the image
-    resizeMode: 'stretch', // Ensures the image fits within the space
-    marginRight: 0, // Optional: Add spacing to separate from text
-    marginLeft: 0, // Optional: Add spacing to separate from text
-    // marginTop: 10, // Optional: Add spacing to separate from text
-    // marginTop: 10, // Optional: Add spacing to separate from text
-  },
-  signout: {
-    borderColor: '#007bff',
-    borderWidth: 2, 
-    borderRadius: 8,
-    backgroundColor: '#007bff',
-    paddingVertical: 1,
-    paddingHorizontal: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 1,
-    marginBottom: 1,
-
-  },
-  signOutButton: {
-    borderRadius: 8,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderWidth: 2,
-    borderColor: '#007bff',
-    backgroundColor: '#007bff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  signOutText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-
-
-});
-
-

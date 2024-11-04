@@ -15,7 +15,14 @@ export default function HomeScreen() {
   const [isPressed, setIsPressed] = useState(false);
 
   // Define signOut inside the component so it has access to hooks
-  const { signOut } = useAuthenticator();
+  // const { signOut } = useAuthenticator();
+
+  // const signOut = () => {
+  //   setIsPressed(true);
+  //   setTimeout(() => {
+  //     setIsPressed(false);
+  //   }, 4);
+  // };
 
   return (
     <ParallaxScrollView
@@ -74,9 +81,9 @@ export default function HomeScreen() {
         </TouchableOpacity>
       </ThemedView>
 
-      <ThemedView style={styles.howitworksvideo}>
+      {/* <ThemedView style={styles.howitworksvideo}>
         <Button title="Sign Out" onPress={signOut} />
-      </ThemedView>
+      </ThemedView> */}
     </ParallaxScrollView>
   );
 }

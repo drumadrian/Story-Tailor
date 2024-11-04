@@ -49,6 +49,7 @@ export default {
       "user_pool_client_id": process.env.EXPO_PUBLIC_COGNITO_CLIENT_ID,
       "identity_pool_id": process.env.EXPO_PUBLIC_COGNITO_IDENTITY_POOL_ID,
       "aws_region": process.env.EXPO_PUBLIC_COGNITO_REGION,
+      "url": process.env.EXPO_PUBLIC_URL,
       "eas": {
         "projectId": "4fdc003f-4775-470e-9499-f2e0f3494fba"
       }
