@@ -412,3 +412,5 @@ Story-Tailor/.env
 Story-Tailor/ios/
 Story-Tailor/android/
 StoryTailor-LLamaIndex/llama-index/
+amplify_outputs.json
+
