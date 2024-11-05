@@ -1,6 +1,4 @@
-import 'expo-env';
-
-export default {
+{
   "expo": {
     "name": "Story Tailor",
     "slug": "Story-Tailor",
@@ -41,21 +39,18 @@ export default {
       "typedRoutes": true
     },
     "extra": {
-      "router": {
-        "origin": false,  
-      },
-      "fact": process.env.EXPO_PUBLIC_FACT,
-      "user_pool_id": process.env.EXPO_PUBLIC_COGNITO_USER_POOL_ID,
-      "user_pool_client_id": process.env.EXPO_PUBLIC_COGNITO_CLIENT_ID,
-      "identity_pool_id": process.env.EXPO_PUBLIC_COGNITO_IDENTITY_POOL_ID,
-      "aws_region": process.env.EXPO_PUBLIC_COGNITO_REGION,
-      "url": process.env.EXPO_PUBLIC_URL,
-      "eas": {
-        "projectId": "4fdc003f-4775-470e-9499-f2e0f3494fba"
-      }
+        "fact": "kittens are cool",
+        "user_pool_id": "us-west-2_Yu92Q50zz",
+        "user_pool_client_id": "6ej8hgmg61tlisicub76sc70pq",
+        "identity_pool_id": "us-west-2:3ab13cc6-2ef6-44c2-9558-b84cfc6e91da",
+        "aws_region": "us-west-2",
+        "url": "https://ojy2kkwvyvc6dc2jhrhfwkk4ui.appsync-api.us-west-2.amazonaws.com/graphql",
+        "router": {
+          "origin": false  
+        },
+        "eas": {
+            "projectId": "4fdc003f-4775-470e-9499-f2e0f3494fba"
+        }
     }
   }
-};
-
-
-
+}

@@ -1,50 +1,17 @@
-// _layout.tsx
-
 import React, { useEffect } from "react";
 import { StyleSheet } from "react-native";
 import { Tabs } from 'expo-router';
 import { ThemeProvider, DarkTheme, DefaultTheme } from '@react-navigation/native';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Amplify } from "aws-amplify";
-import Constants from "expo-constants";
 import { Authenticator } from "@aws-amplify/ui-react-native";
-
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
-
-import outputs from "../amplify_outputs.json";
-
-
-// Amplify configuration (using hardcoded values for example purposes)
-// const amplifyConfig = {
-//   auth: {
-//     region: "us-west-2",
-//     user_Pool_Id: "us-west-2_Yu92Q50zz",
-//     user_Pool_Web_ClientId: "6ej8hgmg61tlisicub76sc70pq",
-//     identity_Pool_Id: "us-west-2:3ab13cc6-2ef6-44c2-9558-b84cfc6e91da",
-//     // mandatorySignIn: false,  // Optional: Set to true if you want to require sign-in for all interactions
-//     // authenticationFlowType: "USER_SRP_AUTH", // Optional: Set the type of authentication flow
-//     passwordPolicy: {
-//       minLength: 8,
-//       requireLowercase: true,
-//       requireNumbers: true,
-//       requireSymbols: true,
-//       requireUppercase: true,
-//     },
-//     mfaConfiguration: "NONE",  // MFA settings
-//     userVerificationAttributes: ["email"],  // Required user attributes
-//     usernameAttributes: ["email"],  // Username attribute
-//     unauthenticatedIdentities: true  // Allow unauthenticated identities
-//   },
-//   API: {
-//     aws_appsync_graphqlEndpoint: "https://ojy2kkwvyvc6dc2jhrhfwkk4ui.appsync-api.us-west-2.amazonaws.com/graphql",
-//     aws_appsync_region: "us-west-2",
-//     aws_appsync_authenticationType: "AMAZON_COGNITO_USER_POOLS", // Use Cognito as the authorization method
-//   }
-// };
+import Constants from "expo-constants";
+// import outputs from "../amplify_outputs.json";
 
 
-
+// Amplify configuration (using Constants values)
 const fact = Constants.expoConfig.extra.fact;
 const user_pool_id = Constants.expoConfig.extra.user_pool_id;
 const user_pool_client_id = Constants.expoConfig.extra.user_pool_client_id;
@@ -52,17 +19,15 @@ const identity_pool_id = Constants.expoConfig.extra.identity_pool_id;
 const aws_region = Constants.expoConfig.extra.aws_region;
 const url = Constants.expoConfig.extra.url;
 
-
-// Amplify configuration (using Constants values)
-console.log("Constants.manifest.extra.fact:", fact);
-console.log("Constants.manifest.extra.user_pool_id:", user_pool_id);
-console.log("Constants.manifest.extra.user_pool_client_id:", user_pool_client_id);
-console.log("Constants.manifest.extra.identity_pool_id:", identity_pool_id);
-console.log("Constants.manifest.extra.aws_region:", aws_region);
-console.log("Constants.manifest.extra.url:", url);
+// console.log(fact);
+// console.log(user_pool_id);
+// console.log(user_pool_client_id);
+// console.log(identity_pool_id);
+// console.log(aws_region);
+// console.log(url);
 
 
-let initial_amplifyConfig = 
+const amplifyConfig = 
   {
     "auth": {
         "aws_region": aws_region,
@@ -173,18 +138,12 @@ let initial_amplifyConfig =
     "version": "1.3"
   };
 
-
-const amplifyConfig = initial_amplifyConfig;
-
-// Log the Amplify configuration to ensure it’s correctly set
+  
 console.log("Amplify Config:", amplifyConfig);
-console.log("Amplify Outputs:", outputs);
+// console.log("Amplify Outputs:", outputs);
 
-
-
-// Configure Amplify
 Amplify.configure(amplifyConfig);
-// Amplify.configure(outputs);
+
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
