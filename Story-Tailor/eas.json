@@ -1,18 +1,40 @@
 {
   "cli": {
-    "version": ">= 10.0.3"
+    "version": ">= 10.0.3",
+    "appVersionSource": "local"
   },
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_FACT": "kittens are cool",
+        "EXPO_PUBLIC_COGNITO_USER_POOL_ID": "us-west-2_Yu92Q50zz",
+        "EXPO_PUBLIC_COGNITO_CLIENT_ID": "6ej8hgmg61tlisicub76sc70pq",
+        "EXPO_PUBLIC_COGNITO_IDENTITY_POOL_ID": "us-west-2:3ab13cc6-2ef6-44c2-9558-b84cfc6e91da",
+        "EXPO_PUBLIC_COGNITO_REGION": "us-west-2",
+        "EXPO_PUBLIC_URL": "https://api.example.com"
+      },
+      // "expoConfig": "./app.config.js"  
+
     },
     "preview": {
       "distribution": "internal"
     },
-    "production": {}
+    "production": {
+      "env": {
+        "EXPO_PUBLIC_FACT": "kittens are cool",
+        "EXPO_PUBLIC_COGNITO_USER_POOL_ID": "us-west-2_Yu92Q50zz",
+        "EXPO_PUBLIC_COGNITO_CLIENT_ID": "6ej8hgmg61tlisicub76sc70pq",
+        "EXPO_PUBLIC_COGNITO_IDENTITY_POOL_ID": "us-west-2:3ab13cc6-2ef6-44c2-9558-b84cfc6e91da",
+        "EXPO_PUBLIC_COGNITO_REGION": "us-west-2",
+        "EXPO_PUBLIC_URL": "https://api.example.com"
+      },
+      // "expoConfig": "./app.config.js"  
+    }
   },
   "submit": {
     "production": {}
   }
 }
+
