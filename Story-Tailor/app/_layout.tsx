@@ -139,7 +139,7 @@ const amplifyConfig =
   };
 
   
-console.log("Amplify Config:", amplifyConfig);
+// console.log("Amplify Config:", amplifyConfig);
 // console.log("Amplify Outputs:", outputs);
 
 Amplify.configure(amplifyConfig);
